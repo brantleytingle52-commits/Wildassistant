@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>WILD Archive</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --purple: #b342ff;
+      --light-purple: #da8cff;
+      --card: rgba(25, 13, 31, 0.86);
+      --border: rgba(194, 89, 255, 0.24);
+      --muted: #aaa3ad;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          #351048 0%,
+          #140818 35%,
+          #050505 78%
+        );
+      background-attachment: fixed;
+    }
+
+    header {
+      padding: 70px 20px 50px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .wild-logo {
+      font-size: clamp(62px, 15vw, 130px);
+      font-weight: 900;
+      letter-spacing: 12px;
+      color: var(--light-purple);
+
+      text-shadow:
+        0 0 12px rgba(180,55,255,.65),
+        0 0 40px rgba(156,32,219,.35);
+
+      margin-bottom: 10px;
+    }
+
+    header h2 {
+      font-size: 16px;
+      letter-spacing: 7px;
+      font-weight: 500;
+      color: #c8bdcb;
+    }
+
+    header p {
+      max-width: 600px;
+      margin: 17px auto 0;
+      color: #8f8794;
+      line-height: 1.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+
+      padding: 14px 18px;
+
+      background: rgba(5,5,5,.90);
+      backdrop-filter: blur(15px);
+
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    nav a {
+      flex-shrink: 0;
+      text-decoration: none;
+      color: #d3cad5;
+      background: #171218;
+
+      padding: 10px 15px;
+
+      border-radius: 20px;
+      font-size: 13px;
+
+      border: 1px solid #302433;
+    }
+
+    nav a:hover {
+      border-color: var(--purple);
+      color: white;
+    }
+
+    main {
+      width: min(950px, 92%);
+      margin: auto;
+      padding: 40px 0 100px;
+    }
+
+    section {
+      margin-bottom: 55px;
+      scroll-margin-top: 90px;
+    }
+
+    .section-label {
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: clamp(29px, 6vw, 42px);
+      margin-bottom: 9px;
+    }
+
+    .description {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 15px 45px rgba(0,0,0,.25);
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+
+      padding: 13px 0;
+
+      border-bottom:
+        1px solid rgba(255,255,255,.07);
+    }
+
+    .status-row:last-child {
+      border-bottom: none;
+    }
+
+    .status-name {
+      color: #cfc6d1;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+
+      padding: 7px 11px;
+
+      border-radius: 20px;
+
+      background:
+        rgba(177,62,255,.17);
+
+      color: #dc9cff;
+
+      border:
+        1px solid rgba(196,102,255,.28);
+
+      white-space: nowrap;
+    }
+
+    .tracklist {
+      list-style: none;
+    }
+
+    .track {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      padding: 16px 0;
+
+      border-bottom:
+        1px solid rgba(255,255,255,.07);
+    }
+
+    .track:last-child {
+      border-bottom: none;
+    }
+
+    .number {
+      width: 34px;
+      color: #765d7d;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .track-name {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 650;
+    }
+
+    .hidden-track {
+      color: #8d8590;
+      letter-spacing: 2px;
+    }
+
+    .bonus {
+      color: var(--light-purple);
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    .public-box {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(111,29,144,.25),
+          rgba(18,10,21,.9)
+        );
+
+      border:
+        1px solid rgba(190,77,255,.35);
+    }
+
+    .documentary-title {
+      font-size: 32px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      color: #e0b2ff;
+    }
+
+    .big-year {
+      font-size: clamp(55px, 15vw, 100px);
+      font-weight: 900;
+      color: var(--purple);
+
+      text-shadow:
+        0 0 30px rgba(178,66,255,.35);
+
+      margin: 15px 0;
+    }
+
+    footer {
+      text-align: center;
+      color: #5e5761;
+
+      padding: 30px 20px 60px;
+
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 600px) {
+
+      header {
+        padding-top: 45px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .track-name {
+        font-size: 15px;
+      }
+
+      .wild-logo {
+        letter-spacing: 6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="wild-logo">
+    WILD
+  </div>
+
+  <h2>
+    PROJECT ARCHIVE
+  </h2>
+
+  <p>
+    Official information, tracklist updates
+    and documentary information from WILD.
+  </p>
+
+</header>
+
+
+<nav>
+
+  <a href="#overview">
+    Overview
+  </a>
+
+  <a href="#tracklist">
+    Tracklist
+  </a>
+
+  <a href="#old">
+    Old Tracklist
+  </a>
+
+  <a href="#documentary">
+    Documentary
+  </a>
+
+</nav>
+
+
+<main>
+
+
+<!-- ========================= -->
+<!-- OVERVIEW -->
+<!-- ========================= -->
+
+<section id="overview">
+
+  <div class="section-label">
+    WILD
+  </div>
+
+  <h1>
+    Project Overview
+  </h1>
+
+  <p class="description">
+    Current public information about WILD.
+    More information will be revealed over time.
+  </p>
+
+
+  <div class="card">
+
+    <div class="status-row">
+
+      <span class="status-name">
+        Main Tracklist
+      </span>
+
+      <span class="badge">
+        7 TRACKS
+      </span>
+
+    </div>
+
+
+    <div class="status-row">
+
+      <span class="status-name">
+        CD Bonus Track
+      </span>
+
+      <span class="badge">
+        LION
+      </span>
+
+    </div>
+
+
+    <div class="status-row">
+
+      <span class="status-name">
+        Documentary
+      </span>
+
+      <span class="badge">
+        COMING 2027
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- TRACKLIST -->
+<!-- ========================= -->
+
+<section id="tracklist">
+
+  <div class="section-label">
+    WILD
+  </div>
+
+  <h1>
+    Tracklist
+  </h1>
+
+  <p class="description">
+    More track names will be revealed later.
+  </p>
+
+
+  <div class="card public-box">
+
+    <ul class="tracklist">
+
+
+      <li class="track">
+
+        <span class="number">
+          01
+        </span>
+
+        <span class="track-name">
+          OUT THE CAGE
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          02
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 2
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          03
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 3
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          04
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 4
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          05
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 5
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          06
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 6
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          07
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 7
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          08
+        </span>
+
+        <span class="track-name">
+          LION
+        </span>
+
+        <span class="bonus">
+          CD BONUS
+        </span>
+
+      </li>
+
+
+    </ul>
+
+  </div>
+
+</section>
+
+
+
+<!-- ========================= -->
+<!-- OLD TRACKLIST -->
+<!-- ========================= -->
+
+<section id="old">
+
+  <div class="section-label">
+    ARCHIVE
+  </div>
+
+  <h1>
+    Old WILD Tracklist
+  </h1>
+
+  <p class="description">
+    An earlier version of the public WILD tracklist.
+  </p>
+
+
+  <div class="card">
+
+    <ul class="tracklist">
+
+
+      <li class="track">
+
+        <span class="number">
+          01
+        </span>
+
+        <span class="track-name">
+          OUT THE CAGE
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          02
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 2
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          03
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 3
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          04
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 4
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          05
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 5
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          06
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 6
+        </span>
+
+      </li>
+
+
+      <li class="track">
+
+        <span class="number">
+          07
+        </span>
+
+        <span class="track-name hidden-track">
+          TRACK 7
+        </span>
+
+      </li>
+
+
+    </ul>
+
+  </div>
+
+</section>
+
+
+
+<!-- ========================= -->
+<!-- DOCUMENTARY -->
+<!-- ========================= -->
+
+<section id="documentary">
+
+  <div class="section-label">
+    DOCUMENTARY
+  </div>
+
+  <h1>
+    WILD Documentary
+  </h1>
+
+
+  <div class="card">
+
+    <div class="documentary-title">
+      BECOMING WILD
+    </div>
+
+
+    <p class="description">
+
+      The documentary follows the creation
+      and development of WILD.
+
+      More information will be revealed.
+
+    </p>
+
+
+    <div class="big-year">
+      2027
+    </div>
+
+
+    <div class="status-row">
+
+      <span class="status-name">
+        Title
+      </span>
+
+      <span class="badge">
+        BECOMING WILD
+      </span>
+
+    </div>
+
+
+    <div class="status-row">
+
+      <span class="status-name">
+        Release
+      </span>
+
+      <span class="badge">
+        COMING 2027
+      </span>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+  WILD PROJECT ARCHIVE
+</footer>
+
+
+</body>
+</html>
